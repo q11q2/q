@@ -1,0 +1,57 @@
+
+Ceaser Cipher
+
+import java.util.*;
+public class Main
+{
+	public static void main(String[] args) 
+	{
+		System.out.println("Enter a plain text :");
+		Scanner sc=new Scanner(System.in);
+		String s=sc.nextLine();
+		System.out.println("Enter a key value :");
+		int n=sc.nextInt();
+		System.out.println("Encrypted of the plain text is :"+enc(s,n));
+	}
+	public static String enc(String s,int n)
+	{
+	    StringBuilder res=new StringBuilder();
+	    for(char c:s.toCharArray())
+	    {
+	        if(Character.isUpperCase(c)) res.append((char)((c-'A'+n)%26+'A'));
+	        else if(Character.isLowerCase(c)) res.append((char)((c-'a'+n)%26+'a'));
+	        else res.append(c);
+	    }
+	    return res.toString();
+	}
+}
+
+====================================================================================
+
+3 . DES - DATA ENCRYPTION STANDARD
+
+import javax.crypto.*;
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) throws Exception 
+    { 
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a message: "); 
+        String message = sc.nextLine();
+        SecretKey key = KeyGenerator.getInstance("DES").generateKey(); 
+        Cipher cipher = Cipher.getInstance("DES");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        String encrypted = Base64.getEncoder().encodeToString(cipher.doFinal(message.getBytes())); 
+        System.out.println("Encrypted: " + encrypted);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        String decrypted = new String(cipher.doFinal(Base64.getDecoder().decode(encrypted))); 
+        System.out.println("Decrypted: " + decrypted);
+    }
+}
+
+
+====================================================================================
+
+
+
