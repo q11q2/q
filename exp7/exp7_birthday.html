@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Reminder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f8f9fa;
+            margin-top: 50px;
+        }
+
+        .app {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .popup {
+            background: #ffcc00;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .input-container {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background: green;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background: darkgreen;
+        }
+
+        .birthday-list {
+            margin-top: 20px;
+        }
+
+        .birthday-item {
+            display: flex;
+            justify-content: space-between;
+            background: #f1f1f1;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .process-btn {
+            margin-top: 15px;
+            background: blue;
+        }
+
+        .process-btn:hover {
+            background: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <h2>Birthday Reminder</h2>
+        <div id="popup" class="popup"></div>
+
+        <div class="input-container">
+            <input type="text" id="nameInput" placeholder="Enter Name">
+            <input type="date" id="dateInput">
+            <button onclick="addBirthday()">Add Birthday</button>
+        </div>
+
+        <div id="birthdayList" class="birthday-list"></div>
+
+        <button class="process-btn" onclick="processBirthdays()">Update Birthdays</button>
+    </div>
+
+    <script>
+        let birthdays = [
+            { id: 1, name: "John Doe", date: "2024-03-10" },
+            { id: 2, name: "Jane Smith", date: "2024-05-15" }
+        ];
+
+        function displayBirthdays() {
+            const list = document.getElementById("birthdayList");
+            list.innerHTML = "";
+            birthdays.forEach(bday => {
+                let div = document.createElement("div");
+                div.className = "birthday-item";
+                div.innerHTML = `
+                    <span>${bday.name} - ${bday.date}</span>
+                    <button onclick="removeBirthday(${bday.id})">Remove</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function addBirthday() {
+            const name = document.getElementById("nameInput").value;
+            const date = document.getElementById("dateInput").value;
+            if (name && date) {
+                birthdays.push({ id: Date.now(), name, date });
+                document.getElementById("nameInput").value = "";
+                document.getElementById("dateInput").value = "";
+                displayBirthdays();
+            }
+        }
+
+        function removeBirthday(id) {
+            birthdays = birthdays.filter(bday => bday.id !== id);
+            displayBirthdays();
+        }
+
+        function processBirthdays() {
+            const today = new Date();
+            birthdays = birthdays.map(bday => {
+                let bdayDate = new Date(bday.date);
+                if (bdayDate < today) {
+                    bdayDate.setFullYear(today.getFullYear() + 1);
+                }
+                return { ...bday, date: bdayDate.toISOString().split("T")[0] };
+            });
+            displayBirthdays();
+        }
+
+        function checkBirthdayPopup() {
+            const today = new Date().toISOString().split("T")[0];
+            const upcomingBday = birthdays.find(bday => bday.date === today);
+            if (upcomingBday) {
+                const popup = document.getElementById("popup");
+                popup.innerText = `Happy Birthday ${upcomingBday.name}!`;
+                popup.style.display = "block";
+                setTimeout(() => popup.style.display = "none", 3000);
+            }
+        }
+
+        displayBirthdays();
+        checkBirthdayPopup();
+    </script>
+</body>
+</html>
+
